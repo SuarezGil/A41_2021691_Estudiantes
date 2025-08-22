@@ -1,0 +1,11 @@
+package org.zix.crudtarea.persistence.crud;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.zix.crudtarea.persistence.entity.Estudiante;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public class EstudianteCrud extends JpaRepository<Estudiante,Integer> {
+
+}
