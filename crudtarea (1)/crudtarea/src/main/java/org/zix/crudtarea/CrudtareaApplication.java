@@ -6,160 +6,210 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.zix.crudtarea.dominio.service.ICursoService;
 import org.zix.crudtarea.dominio.service.IEstudianteService;
+import org.zix.crudtarea.persistence.entity.Curso;
 import org.zix.crudtarea.persistence.entity.Estudiante;
 
 import java.util.List;
 import java.util.Scanner;
 
-
 @SpringBootApplication
 public class CrudtareaApplication implements CommandLineRunner {
-    //Inyeccion de dependecia
-    // @Autowired
+
+    @Autowired
     private IEstudianteService estudianteService;
-    // crear nuestro objet(herramamienta) Logger para interactuar con la consola
+
+    @Autowired
+    private ICursoService cursoService;
 
     private static final Logger logger = LoggerFactory.getLogger(CrudtareaApplication.class);
 
-    //Crear un Objeto String para saltos de line
-    String sl = System.lineSeparator(); // salto de linea
+    String sl = System.lineSeparator(); // Salto de línea
 
     public static void main(String[] args) {
         logger.info("AQUI INICIA NUESTRA APLICACION");
         SpringApplication.run(CrudtareaApplication.class, args);
         logger.info("AQUI TERMINO LA APLICACION");
     }
+
     @Override
-    public void run(String... args) throws Exception {
-        crudTareaApp();
+    public void run(String... args) {
+        menuPrincipal();
     }
 
-    private void crudTareaApp(){
-        logger.info("++++++APLICACION DE REGISTRO DE CLIENTE");
+    // Menú principal
+    private void menuPrincipal() {
         var salir = false;
         var consola = new Scanner(System.in);
-        while(!salir){
 
-            var opcion = mostrarMenu(consola);
-            salir = ejecutarOpciones(consola, opcion);
-            logger.info(sl);
+        while (!salir) {
+            logger.info("""
+                    \n***Menu Principal***
+                    1. CRUD de Estudiantes
+                    2. CRUD de Cursos
+                    3. Salir
+                    Elige una opción: \s""");
+            int opcion = Integer.parseInt(consola.nextLine());
+            switch (opcion) {
+                case 1 -> menuEstudiantes(consola);
+                case 2 -> menuCursos(consola);
+                case 3 -> salir = true;
+                default -> logger.info("Opción no válida");
+            }
         }
-
     }
-    private int mostrarMenu(Scanner consola){
-        logger.info("""
-                \n ***Aplicacion***
-                1. Listar todos los clientes.
-                2. Buscar cliente por codigo.
-                3. Agregar nuevo cliente.
-                4. Modificar cliente
-                5. Eliminar cliente
-                6. Salir.
-                
-                Elije una opcion: \s """);
-        var opcion = Integer.parseInt(consola.nextLine());
-        return opcion;
 
-
-    }
-    private boolean ejecutarOpciones(Scanner consola, int opcion) {
+    // Menú de Estudiantes
+    private void menuEstudiantes(Scanner consola) {
         var salir = false;
-        switch (opcion) {
-            case 1 -> {
-                logger.info(sl + "***Listado de todos los Clientes***" + sl);
-                List<Estudiante> estudiantes = estudianteService.listarEstudiantes();
-                estudiantes.forEach(estudiante -> logger.info(estudiante.toString() + sl));
-            }
-            case 2 -> {
-                logger.info(sl + "*** Buscar Cliente por su codigo ***" + sl);
-                var codigo = Integer.parseInt(consola.nextLine());
-                Estudiante estudiante = estudianteService.buscarEstudiantePorId(codigo);
-                if (estudiante != null) {
-                    logger.info("Cliente encontrado: " + sl + estudiante + sl);
-                } else {
-                    logger.info("Cliente No Encontrado: " + sl + estudiante + sl);
-
+        while (!salir) {
+            logger.info("""
+                    \n***CRUD de Estudiantes***
+                    1. Listar todos los estudiantes
+                    2. Buscar estudiante por código
+                    3. Agregar nuevo estudiante
+                    4. Modificar estudiante
+                    5. Eliminar estudiante
+                    6. Volver al menú principal
+                    Elige una opción: \s""");
+            int opcion = Integer.parseInt(consola.nextLine());
+            switch (opcion) {
+                case 1 -> {
+                    logger.info(sl + "***Listado de todos los Estudiantes***" + sl);
+                    List<Estudiante> estudiantes = estudianteService.listarEstudiantes();
+                    estudiantes.forEach(e -> logger.info(e.toString() + sl));
                 }
-
-            }
-            case 3 -> {
-                logger.info(sl + "***Agregar nuevo Cliente ***" + sl);
-                logger.info("Ingrese el nombre");
-                var nombre = consola.nextLine();
-                logger.info("Ingrese el apellido");
-                var apellido = consola.nextLine();
-                logger.info("Ingrese el correo");
-                var correo = consola.nextLine();
-                logger.info("Ingrese el genero");
-                var genero = consola.nextLine();
-                logger.info("Ingrese la edad");
-                var estudiante = Integer.parseInt(consola.nextLine());
-
-                estudiante.setNombre(nombre);
-                estudiante.setApellido(apellido);
-                estudiante.setCorreo(correo);
-                estudiante.setGenero(genero);
-                estudiante.setEdad(edad);
-                estudianteService.guardarEstudiante(estudiante);
-            }
-            case 4 -> {
-                logger.info(sl + "***Modificar Estudiante ***" + sl);
-                logger.info("Ingrese el codigo del estudiante a editar");
-                var codigo = Integer.parseInt(consola.nextLine());
-                Estudiante estudiante = estudianteService.buscarEstudiantePorId(codigo);
-                if (estudiante != null) {
-                    logger.info("Ingrese el nombre");
-                    var nombre = consola.nextLine();
-                    logger.info("Ingrese el apellido");
-                    var apellido = consola.nextLine();
-                    logger.info("Ingrese el correo");
-                    var correo = consola.nextLine();
-                    logger.info("Ingrese el genero");
-                    var genero = consola.nextLine();
-                    logger.info("Ingrese la edad");
-                    var edad = Integer.parseInt(consola.nextLine());
-
-                    estudiante.setNombre(nombre);
-                    estudiante.setApellido(apellido);
-                    estudiante.setCorreo(correo);
-                    estudiante.setGenero(genero);
-                    estudiante.setEdad(edad);
-                    estudianteService.guardarEstudiante(estudiante);
-                    logger.info("Estudiante Modificado: " + sl + estudiante + sl);
-                }else {
-                logger.info("Cliente No encotrado: " + sl + estudiante + sl);
-
-            }
-
-
-
-
-            case 5 -> {
-                logger.info(sl+"***Eliminar Cliente***"+sl);
-                logger.info("Ingrese el codigo de cliente a eliminar");
-                var codigo = Integer.parseInt(consola.nextLine());
-                var estudiantes = estudianteService.buscarEstudiantePorId(codigo);
-                if (estudiante !=null){
-                    estudianteService.eliminarEstudiante(estudiante);
-                    logger.info("Cleinte eliminado, adios"+sl+estudiante+sl);
-
-                }else{
-                    logger.info("Estudiante no encotrado"+sl+estudiante+sl);
+                case 2 -> {
+                    logger.info("Ingrese el código del estudiante:");
+                    int codigo = Integer.parseInt(consola.nextLine());
+                    Estudiante e = estudianteService.buscarEstudiantePorId(codigo);
+                    logger.info(e != null ? e.toString() : "Estudiante no encontrado");
                 }
+                case 3 -> {
+                    Estudiante e = new Estudiante();
+                    logger.info("Nombre:");
+                    e.setNombre(consola.nextLine());
+                    logger.info("Apellido:");
+                    e.setApellido(consola.nextLine());
+                    logger.info("Correo:");
+                    e.setCorreo(consola.nextLine());
 
+                    // Selección de curso
+                    logger.info("Código del curso:");
+                    int codigoCurso = Integer.parseInt(consola.nextLine());
+                    e.setCurso(cursoService.buscarCursoPorId(codigoCurso));
+
+                    estudianteService.guardarEstudiante(e);
+                    logger.info("Estudiante agregado");
+                }
+                case 4 -> {
+                    logger.info("Código del estudiante a modificar:");
+                    int codigo = Integer.parseInt(consola.nextLine());
+                    Estudiante e = estudianteService.buscarEstudiantePorId(codigo);
+                    if (e != null) {
+                        logger.info("Nombre:");
+                        e.setNombre(consola.nextLine());
+                        logger.info("Apellido:");
+                        e.setApellido(consola.nextLine());
+                        logger.info("Correo:");
+                        e.setCorreo(consola.nextLine());
+
+                        logger.info("Código del curso:");
+                        int codigoCurso = Integer.parseInt(consola.nextLine());
+                        e.setCurso(cursoService.buscarCursoPorId(codigoCurso));
+
+                        estudianteService.guardarEstudiante(e);
+                        logger.info("Estudiante modificado");
+                    } else {
+                        logger.info("Estudiante no encontrado");
+                    }
+                }
+                case 5 -> {
+                    logger.info("Código del estudiante a eliminar:");
+                    int codigo = Integer.parseInt(consola.nextLine());
+                    Estudiante e = estudianteService.buscarEstudiantePorId(codigo);
+                    if (e != null) {
+                        estudianteService.eliminarEstudiante(e);
+                        logger.info("Estudiante eliminado");
+                    } else {
+                        logger.info("Estudiante no encontrado");
+                    }
+                }
+                case 6 -> salir = true;
+                default -> logger.info("Opción no válida");
             }
-            case 6 -> {
-                logger.info("Hasta pronto, Vaquero"+sl+sl);
-                salir = true;
-
-            }
-            default -> logger.info("Opcion no valida");
-
         }
-        return false;
     }
 
-
+    // Menú de Cursos
+    private void menuCursos(Scanner consola) {
+        var salir = false;
+        while (!salir) {
+            logger.info("""
+                    \n***CRUD de Cursos***
+                    1. Listar todos los cursos
+                    2. Buscar curso por código
+                    3. Agregar nuevo curso
+                    4. Modificar curso
+                    5. Eliminar curso
+                    6. Ver estudiantes de un curso
+                    7. Volver al menú principal
+                    Elige una opción: \s""");
+            int opcion = Integer.parseInt(consola.nextLine());
+            switch (opcion) {
+                case 1 -> cursoService.listarCursos().forEach(c -> logger.info(c.toString()));
+                case 2 -> {
+                    logger.info("Código del curso:");
+                    int codigo = Integer.parseInt(consola.nextLine());
+                    Curso c = cursoService.buscarCursoPorId(codigo);
+                    logger.info(c != null ? c.toString() : "Curso no encontrado");
+                }
+                case 3 -> {
+                    Curso c = new Curso();
+                    logger.info("Nombre del curso:");
+                    c.setNombreCurso(consola.nextLine());
+                    cursoService.guardarCurso(c);
+                    logger.info("Curso agregado");
+                }
+                case 4 -> {
+                    logger.info("Código del curso a modificar:");
+                    int codigo = Integer.parseInt(consola.nextLine());
+                    Curso c = cursoService.buscarCursoPorId(codigo);
+                    if (c != null) {
+                        logger.info("Nombre del curso:");
+                        c.setNombreCurso(consola.nextLine());
+                        cursoService.guardarCurso(c);
+                        logger.info("Curso modificado");
+                    } else {
+                        logger.info("Curso no encontrado");
+                    }
+                }
+                case 5 -> {
+                    logger.info("Código del curso a eliminar:");
+                    int codigo = Integer.parseInt(consola.nextLine());
+                    Curso c = cursoService.buscarCursoPorId(codigo);
+                    if (c != null) {
+                        cursoService.eliminarCurso(c);
+                        logger.info("Curso eliminado");
+                    } else {
+                        logger.info("Curso no encontrado");
+                    }
+                }
+                case 6 -> {
+                    logger.info("Código del curso para ver estudiantes:");
+                    int codigo = Integer.parseInt(consola.nextLine());
+                    Curso c = cursoService.buscarCursoPorId(codigo);
+                    if (c != null && c.getEstudiantes() != null) {
+                        logger.info("Estudiantes del curso " + c.getNombreCurso() + ":");
+                        c.getEstudiantes().forEach(e -> logger.info(e.toString()));
+                    } else {
+                        logger.info("Curso no encontrado o sin estudiantes");
+                    }
+                }
+                case 7 -> salir = true;
+                default -> logger.info("Opción no válida");
+            }
+        }
+    }
 }
-

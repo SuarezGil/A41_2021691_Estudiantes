@@ -6,6 +6,6 @@ import org.zix.crudtarea.persistence.entity.Estudiante;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public class EstudianteCrud extends JpaRepository<Estudiante,Integer> {
+public interface EstudianteCrud extends JpaRepository<Estudiante,Integer> {
 
 }

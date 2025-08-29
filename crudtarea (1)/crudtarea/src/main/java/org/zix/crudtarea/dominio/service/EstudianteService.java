@@ -6,8 +6,8 @@ import org.zix.crudtarea.persistence.crud.EstudianteCrud;
 import org.zix.crudtarea.persistence.entity.Estudiante;
 
 import java.util.List;
-@Service
 
+@Service
 public class EstudianteService implements IEstudianteService {
 
     //Inyeccion de dependencia de mi Repositorio (ClienteRepository)

@@ -3,7 +3,7 @@ package org.zix.crudtarea.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity(name = "Estudiante")
+@Entity(name = "Estudiantes")
 //Lombok
 @Data //genera los setter y getter
 @NoArgsConstructor
@@ -19,8 +19,9 @@ public class Estudiante {
     @Column
     private String nombre;
     private String apellido;
-    private String telefono;
     private String correo;
-    private String genero;
-    private Integer edad;
+
+    @ManyToOne
+    @JoinColumn(name = "codigo_curso")
+    private Curso curso; // Relación con Curso
 }
