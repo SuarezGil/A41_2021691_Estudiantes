@@ -14,7 +14,6 @@ import org.zix.crudtarea.persistence.entity.Estudiante;
 import java.util.List;
 import java.util.Scanner;
 
-@SpringBootApplication
 public class CrudtareaApplication implements CommandLineRunner {
 
     @Autowired
