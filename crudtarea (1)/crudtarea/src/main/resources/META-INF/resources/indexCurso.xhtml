@@ -19,6 +19,16 @@
                 </p:menubar>
 
                 <p:dataTable value="#{indexCursoController.cursos}" var="curso" id="tabla-cursos" widgetVar="tablaCursos">
+
+                    <f:facet name="header">
+                        <div class="flex justify-content-center flex-wrap card-container yellow-container">
+                            <div class="flex align-items-center justify-content-center w-20rem h-4rem bg-yellow-500 font-bold text-gray-900 border-round m-2">
+                                <h3>Lista, Cursos</h3>
+                            </div>
+
+                        </div>
+                    </f:facet>
+
                     <p:column headerText="ID">
                         <h:outputText value="#{curso.codigoCurso}"/>
                     </p:column>
@@ -26,12 +36,16 @@
                         <h:outputText value="#{curso.nombreCurso}"/>
                     </p:column>
                     <p:column headerText="Opciones">
-                        <p:commandButton value="Editar" icon="pi pi-pencil"
+                        <p:commandButton value="Editar" icon="pi pi-pencil" class="ui-button-primary"
                                          update=":formulario-modal:ventana-curso"
+                                         process="@this" style="margin-right: 5rem"
                                          oncomplete="PF('ventanaModalCurso').show()">
-                            <f:setPropertyActionListener value="#{curso}" target="#{indexCursoController.cursoSeleccionado}"/>
+                            <f:setPropertyActionListener value="#{curso}"
+                                                         target="#{indexCursoController.cursoSeleccionado}"/>
+                            <p:resetInput target=":formulario-modal:ventana-curso"/>
                         </p:commandButton>
-                        <p:commandButton value="Eliminar" icon="pi pi-trash"
+                        <p:commandButton value="Eliminar" icon="pi pi-trash" class="ui-button-danger"
+                                         process="@this"
                                          oncomplete="PF('ventanaEliminarCurso').show()">
                             <f:setPropertyActionListener value="#{curso}" target="#{indexCursoController.cursoSeleccionado}"/>
                         </p:commandButton>
@@ -48,8 +62,11 @@
                         </div>
                     </p:outputPanel>
                     <f:facet name="footer">
-                        <p:commandButton value="Guardar" actionListener="#{indexCursoController.guardarCurso}"
-                                         update="formulario-cursos:tabla-cursos,formulario-cursos:mensaje_emergente"/>
+                        <p:commandButton value="Guardar" icon="pi pi-check" class="ui-button-primary"
+                                         process="ventana-curso @this" actionListener="#{indexCursoController.guardarCurso}"
+                                         update=":formulario-cursos:tabla-cursos, :formulario-cursos:mensaje_emergente"
+                                         oncomplete="PF('ventanaModalCurso').hide()"/>/>
+
                         <p:commandButton value="Cancelar" onclick="PF('ventanaModalCurso').hide()" type="button"/>
                     </f:facet>
                 </p:dialog>
